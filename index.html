@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>骰子游戏 - 落地页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+
+        /* 页面背景 */
+        .hero {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1f2c4c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .score {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #28a745;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-container div {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            font-size: 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .game-container div:hover {
+            background-color: #218838;
+        }
+
+        .game-container .big, .game-container .small {
+            font-size: 2em;
+        }
+
+        .game-container div p {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        /* 竖版和横版布局 */
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: repeat(2, 1fr);
+                flex-direction: row;
+                margin: 10px;
+            }
+
+            .hero {
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+
+            .game-container div {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 页面主要内容 -->
+    <div class="hero">
+        <h1>骰子游戏</h1>
+        <p>选择“大”或“小”，或者点击特定的点数区域进行下注。</p>
+        <div class="score">当前积分：<span id="score">100</span> 积分</div>
+        <button onclick="resetGame()">重置游戏</button>
+    </div>
+
+    <div class="game-container">
+        <div class="big" onclick="placeBet('big')">
+            大
+            <p>选择 11-17 点数，赔率 1:1</p>
+        </div>
+        <div class="small" onclick="placeBet('small')">
+            小
+            <p>选择 4-10 点数，赔率 1:1</p>
+        </div>
+        <div class="point" onclick="placeBet(4)">
+            4
+            <p>赔率 50:1</p>
+        </div>
+        <div class="point" onclick="placeBet(5)">
+            5
+            <p>赔率 50:1</p>
+        </div>
+        <div class="point" onclick="placeBet(6)">
+            6
+            <p>赔率 50:1</p>
+        </div>
+        <div class="point" onclick="placeBet(10)">
+            10
+            <p>赔率 18:1</p>
+        </div>
+        <div class="point" onclick="placeBet(11)">
+            11
+            <p>赔率 18:1</p>
+        </div>
+        <div class="point" onclick="placeBet(12)">
+            12
+            <p>赔率 18:1</p>
+        </div>
+        <div class="point" onclick="placeBet(13)">
+            13
+            <p>赔率 12:1</p>
+        </div>
+        <div class="point" onclick="placeBet(14)">
+            14
+            <p>赔率 12:1</p>
+        </div>
+        <div class="point" onclick="placeBet(15)">
+            15
+            <p>赔率 12:1</p>
+        </div>
+        <div class="point" onclick="placeBet(16)">
+            16
+            <p>赔率 6:1</p>
+        </div>
+        <div class="point" onclick="placeBet(17)">
+            17
+            <p>赔率 6:1</p>
+        </div>
+    </div>
+
+    <script>
+        let score = 100;  // 初始积分
+
+        function updateScore() {
+            document.getElementById('score').innerText = score;
+        }
+
+        function placeBet(bet) {
+            if (score <= 0) {
+                alert("你没有足够的积分！");
+                return;
+            }
+
+            // 下注金额设定
+            let betAmount = 10;  // 每次下注 10 积分
+            if (score < betAmount) {
+                alert("你的积分不足！");
+                return;
+            }
+
+            // 模拟骰子点数
+            const dice = [1, 2, 3, 4, 5, 6];
+            const rolled = dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)];
+
+            let win = false;
+            let odds = 1;
+
+            // 判断是否赢
+            if (bet === 'big' && rolled >= 11 && rolled <= 17) {
+                win = true;
+                odds = 1;
+            } else if (bet === 'small' && rolled >= 4 && rolled <= 10) {
+                win = true;
+                odds = 1;
+            } else if (typeof bet === 'number' && bet === rolled) {
+                win = true;
+                odds = bet === 4 || bet === 5 || bet === 6 ? 50 : bet === 10 || bet === 11 || bet === 12 ? 18 : 12;
+            }
+
+            if (win) {
+                score += betAmount * odds;
+                alert(`你赢了！骰子的点数是 ${rolled}，你获得了 ${betAmount * odds} 积分。`);
+            } else {
+                score -= betAmount;
+                alert(`你输了！骰子的点数是 ${rolled}，你失去了 ${betAmount} 积分。`);
+            }
+
+            updateScore();
+        }
+
+        function resetGame() {
+            score = 100;
+            updateScore();
+        }
+
+        // 初始化积分
+        updateScore();
+    </script>
+</body>
+</html>
+
