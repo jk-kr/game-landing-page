@@ -17,7 +17,6 @@
             overflow: hidden;
         }
 
-        /* 页面背景 */
         .hero {
             display: flex;
             justify-content: center;
@@ -81,7 +80,6 @@
             font-size: 1.2em;
         }
 
-        /* 竖版和横版布局 */
         @media (max-width: 768px) {
             .game-container {
                 grid-template-columns: repeat(2, 1fr);
@@ -116,12 +114,10 @@
 </head>
 <body>
 
-    <!-- 页面主要内容 -->
     <div class="hero">
         <h1>骰子游戏</h1>
         <p>选择“大”或“小”，或者点击特定的点数区域进行下注。</p>
-        <div class="score">当前积分：<span id="score">100</span> 积分</div>
-        <button onclick="resetGame()">重置游戏</button>
+        <div class="score">当前积分：<span id="score">1000</span> 积分</div>
     </div>
 
     <div class="game-container">
@@ -180,62 +176,61 @@
     </div>
 
     <script>
-        let score = 100;  // 初始积分
+        window.onload = function() {
+            let score = 1000;  // 初始积分
+            let gameStarted = true;  // 游戏一开始就处于进行状态
 
-        function updateScore() {
-            document.getElementById('score').innerText = score;  // 更新页面上的积分显示
-        }
-
-        function placeBet(bet) {
-            if (score <= 0) {
-                alert("你没有足够的积分！");
-                return;
+            // 更新页面上的积分显示
+            function updateScore() {
+                document.getElementById('score').innerText = score; // 更新积分显示
             }
 
-            // 下注金额设定
-            let betAmount = 10;  // 每次下注 10 积分
-            if (score < betAmount) {
-                alert("你的积分不足！");
-                return;
+            // 下注功能
+            function placeBet(bet) {
+                if (score <= 0) {
+                    alert("你没有足够的积分！");
+                    return;
+                }
+
+                let betAmount = 10;  // 每次下注 10 积分
+                if (score < betAmount) {
+                    alert("你的积分不足！");
+                    return;
+                }
+
+                // 模拟骰子点数
+                const dice = [1, 2, 3, 4, 5, 6];
+                const rolled = dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)];
+
+                let win = false;
+                let odds = 1;
+
+                // 判断是否赢
+                if (bet === 'big' && rolled >= 11 && rolled <= 17) {
+                    win = true;
+                    odds = 1;
+                } else if (bet === 'small' && rolled >= 4 && rolled <= 10) {
+                    win = true;
+                    odds = 1;
+                } else if (typeof bet === 'number' && bet === rolled) {
+                    win = true;
+                    odds = bet === 4 || bet === 5 || bet === 6 ? 50 : bet === 10 || bet === 11 || bet === 12 ? 18 : 12;
+                }
+
+                if (win) {
+                    score += betAmount * odds;
+                    alert(`你赢了！骰子的点数是 ${rolled}，你获得了 ${betAmount * odds} 积分。`);
+                } else {
+                    score -= betAmount;
+                    alert(`你输了！骰子的点数是 ${rolled}，你失去了 ${betAmount} 积分。`);
+                }
+
+                updateScore();
             }
 
-            // 模拟骰子点数
-            const dice = [1, 2, 3, 4, 5, 6];
-            const rolled = dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)] + dice[Math.floor(Math.random() * dice.length)];
-
-            let win = false;
-            let odds = 1;
-
-            // 判断是否赢
-            if (bet === 'big' && rolled >= 11 && rolled <= 17) {
-                win = true;
-                odds = 1;
-            } else if (bet === 'small' && rolled >= 4 && rolled <= 10) {
-                win = true;
-                odds = 1;
-            } else if (typeof bet === 'number' && bet === rolled) {
-                win = true;
-                odds = bet === 4 || bet === 5 || bet === 6 ? 50 : bet === 10 || bet === 11 || bet === 12 ? 18 : 12;
-            }
-
-            if (win) {
-                score += betAmount * odds;
-                alert(`你赢了！骰子的点数是 ${rolled}，你获得了 ${betAmount * odds} 积分。`);
-            } else {
-                score -= betAmount;
-                alert(`你输了！骰子的点数是 ${rolled}，你失去了 ${betAmount} 积分。`);
-            }
-
+            // 初始化显示积分为1000
             updateScore();
-        }
-
-        function resetGame() {
-            score = 100;  // 重置积分为100
-            updateScore(); // 更新页面上的积分显示
-        }
-
-        // 初始化积分
-        updateScore();
+        };
     </script>
 </body>
 </html>
