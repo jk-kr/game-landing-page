@@ -183,7 +183,7 @@
         let score = 100;  // 初始积分
 
         function updateScore() {
-            document.getElementById('score').innerText = score;
+            document.getElementById('score').innerText = score;  // 更新页面上的积分显示
         }
 
         function placeBet(bet) {
@@ -230,8 +230,8 @@
         }
 
         function resetGame() {
-            score = 100;
-            updateScore();
+            score = 100;  // 重置积分为100
+            updateScore(); // 更新页面上的积分显示
         }
 
         // 初始化积分
@@ -239,4 +239,3 @@
     </script>
 </body>
 </html>
-
